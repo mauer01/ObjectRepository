@@ -5,8 +5,8 @@
   "imports": {
     "@std/assert": "jsr:@std/assert@1",
     "@b-fuze/deno-dom": "jsr:@b-fuze/deno-dom@^0.1.56",
-    "stub": "jsr:@utiliti3s/stubclass",
-    "Logger": "jsr:@utiliti3s/loggers"
+    "stub": "jsr:@utiliti3s/stubclass@^0.1.2",
+    "Logger": "jsr:@utiliti3s/loggers@^0.1.0"
   },
   "lint": {
     "rules": {
