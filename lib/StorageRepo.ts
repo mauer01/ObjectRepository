@@ -26,7 +26,7 @@ export class StorageRepo<
     );
     this.assertNotNull(args, key);
     const parsed: Args = JSON.parse(args);
-    const object: Object = this.ObjectClass.load(parsed, this.dependencies);
+    const object: Object = this.Factory.load(parsed, this.dependencies);
     object.setId(key);
     return object;
   }
@@ -101,14 +101,14 @@ export class StorageRepo<
    * Creates a new StorageRepo instance.
    * @param repo The storage mechanism to use.
    * @param tableName The name of the table in storage.
-   * @param ObjectClass The class of the objects being stored, with a static load method.
+   * @param Factory The class of the objects being stored, with a static load method.
    * @param dependencies Dependencies required for loading objects.
    * @param logger Optional logger.
    */
   constructor(
     private readonly repo: Storage,
     private readonly tableName: string,
-    private readonly ObjectClass: ClassFactory<Args, Dependencies, Object>,
+    private readonly Factory: ClassFactory<Args, Dependencies, Object>,
     private readonly dependencies: Dependencies,
     logger?: Logger,
   ) {
