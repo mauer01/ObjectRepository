@@ -1,20 +1,20 @@
-import type { ObjectRepository } from "../types/ObjectRepository.ts";
 import type { SaveAble } from "../types/SaveAble.ts";
 import type { Arguments } from "../types/Arguments.ts";
 import type { Identified } from "../types/Identified.ts";
 import type { ClassFactory } from "../types/ClassFactory.ts";
 import type { Logger } from "Logger";
+import type { AsyncObjectRepository } from "../types/AsyncObjectRepository.ts";
 
 export class SQLRepository<
   Object extends SaveAble<Args>,
   Args extends Arguments,
   Dependencies extends Record<string, unknown>,
-> implements ObjectRepository<Object> {
+> implements AsyncObjectRepository<Object> {
   logger: Logger | typeof console;
   constructor(
-    private readonly ObjectClass: ClassFactory<Args, Dependencies, Object>,
+    private readonly Factory: ClassFactory<Args, Dependencies, Object>,
     private readonly dependencies: Dependencies,
-    private readonly baseTableName: string = this.ObjectClass.name,
+    private readonly baseTableName: string = this.Factory.name,
     private readonly sqlConfig?: {},
     logger?: Logger,
   ) {
@@ -23,25 +23,30 @@ export class SQLRepository<
       : console;
     this.logger.log("Initiating...");
   }
-  find(_key: string): Identified<Object> {
+  find(_key: string): Promise<Identified<Object>> {
     throw new Error("Method not implemented.");
   }
-  save(_object: Identified<Object>): Identified<Object>;
-  save(_object: Object): Identified<Object>;
-  save(_object: unknown): Identified<Object> {
-    throw new Error("Method not implemented.");
+  save(object: Identified<Object>): Promise<Identified<Object>>;
+  save(object: Object): Promise<Identified<Object>>;
+  save(object: Identified<Object> | Object): Promise<Identified<Object>> {
+    object.setId("");
+    return new Promise((r) => {
+      r(object);
+    });
   }
 
-  saveMany(..._objects: (Identified<Object> | Object)[]): Identified<Object>[] {
+  saveMany(
+    ...objects: (Identified<Object> | Object)[]
+  ): Promise<Identified<Object>[]> {
+    return Promise.all(objects.map((e) => this.save(e)));
+  }
+  findAll(): Promise<Identified<Object>[]> {
     throw new Error("Method not implemented.");
   }
-  findAll(): Identified<Object>[] {
+  delete(_object: Identified<Object>): Promise<void> {
     throw new Error("Method not implemented.");
   }
-  delete(_object: Identified<Object>): void {
-    throw new Error("Method not implemented.");
-  }
-  deleteMany(..._object: Identified<Object>[]): void {
+  deleteMany(..._object: Identified<Object>[]): Promise<void[]> {
     throw new Error("Method not implemented.");
   }
 }
