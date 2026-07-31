@@ -32,7 +32,14 @@ export class RamRepo<
     object.setId(key);
     return object;
   }
-
+  findAllBy<T extends keyof Args>(
+    arg: T,
+    value: Args[T],
+  ): Identified<Object>[] {
+    return Object.keys(this.table).filter((key) => {
+      return this.table[key][arg] === value;
+    }).map((key) => this.find(key));
+  }
   save(object: Identified<Object>): Identified<Object>;
   save(object: Object): Identified<Object>;
   save(object: Object | Identified<Object>): Identified<Object> {
