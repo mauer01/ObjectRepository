@@ -6,15 +6,19 @@ import { RamLogger } from "Logger";
 import type { Identified } from "../../DuelingBookAddons/Interfaces/Identified.ts";
 class Test {
   static args: unknown[] = [];
-  static load(...args: unknown[]): SaveAble<{ arg1: string; arg2: string }> {
-    this.args.push(args);
+  static load(
+    args: { arg1: string; arg2: string },
+    deps: { no: string },
+  ): SaveAble<{ arg1: string; arg2: string }> {
+    this.args.push([args, deps]);
     const a = new SaveAbleStub();
-    a.registerOutput("save", ...args, true);
+    a.registerOutput("save", args, true);
     return a.this;
   }
   static clear(): void {
     this.args = [];
   }
+  static structuredType: { arg1: string; arg2: string };
 }
 Deno.test("StorageRepo", async (t) => {
   const generateNoise = (a: boolean = false) => {
@@ -57,7 +61,7 @@ Deno.test("StorageRepo", async (t) => {
     await st.step("success", () => {
       generateNoise();
 
-      const obj = localStorageRepo.save(Test.load(testArgs));
+      const obj = localStorageRepo.save(Test.load(testArgs, testDeps));
       assertEquals(
         JSON.parse(localStorage.getItem("test:" + obj.id) ?? "{}"),
         testArgs,
@@ -74,7 +78,7 @@ Deno.test("StorageRepo", async (t) => {
         arg2: "arg123",
       };
       const obj = localStorageRepo.save(
-        Test.load(testArgs),
+        Test.load(testArgs, testDeps),
       ) as unknown as Identified<SaveAbleStub>;
       obj.reset(true);
       assertEquals(
