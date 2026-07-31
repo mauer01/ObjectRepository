@@ -3,6 +3,7 @@ import type { Identified } from "../types/Identified.ts";
 import type { Logger } from "Logger";
 import type { SaveAble } from "../types/SaveAble.ts";
 import type { Arguments } from "../types/Arguments.ts";
+import type { ClassFactory } from "../types/ClassFactory.ts";
 
 /**
  * Implementation of ObjectRepository that uses a storage mechanism (like LocalStorage).
@@ -107,15 +108,7 @@ export class StorageRepo<
   constructor(
     private readonly repo: Storage,
     private readonly tableName: string,
-    private readonly ObjectClass: {
-      load<
-        A extends Args,
-        B extends Dependencies,
-      >(
-        args: A,
-        dependencies: B,
-      ): Object;
-    },
+    private readonly ObjectClass: ClassFactory<Args, Dependencies, Object>,
     private readonly dependencies: Dependencies,
     logger?: Logger,
   ) {
