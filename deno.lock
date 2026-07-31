@@ -1,20 +1,64 @@
 {
   "version": "5",
   "specifiers": {
+    "jsr:@hongminhee/deno-task-hooks@*": "0.1.2",
     "jsr:@std/assert@1": "1.0.19",
+    "jsr:@std/assert@~0.222.1": "0.222.1",
+    "jsr:@std/cli@~0.222.1": "0.222.1",
+    "jsr:@std/fmt@~0.222.1": "0.222.1",
+    "jsr:@std/fs@~0.222.1": "0.222.1",
     "jsr:@std/internal@^1.0.12": "1.0.14",
+    "jsr:@std/jsonc@~0.222.1": "0.222.1",
+    "jsr:@std/path@~0.222.1": "0.222.1",
     "jsr:@utiliti3s/loggers@0.1": "0.1.0",
     "jsr:@utiliti3s/stubclass@~0.1.2": "0.1.2"
   },
   "jsr": {
+    "@hongminhee/deno-task-hooks@0.1.2": {
+      "integrity": "72e87e497264efc72ca045fcefd2cdf8b47241e5058d382de9080c2dbb805e65",
+      "dependencies": [
+        "jsr:@std/cli",
+        "jsr:@std/fmt",
+        "jsr:@std/fs",
+        "jsr:@std/jsonc",
+        "jsr:@std/path"
+      ]
+    },
+    "@std/assert@0.222.1": {
+      "integrity": "691637161ee584a9919d1f9950ddd1272feb8e0a19e83aa5b7563cedaf73d74c"
+    },
     "@std/assert@1.0.19": {
       "integrity": "eaada96ee120cb980bc47e040f82814d786fe8162ecc53c91d8df60b8755991e",
       "dependencies": [
         "jsr:@std/internal"
       ]
     },
+    "@std/cli@0.222.1": {
+      "integrity": "18b3c15840d68dc588db53613e0e9b196e30e33ea2a2906624c991c008421ffa",
+      "dependencies": [
+        "jsr:@std/assert@~0.222.1"
+      ]
+    },
+    "@std/fmt@0.222.1": {
+      "integrity": "ec3382f9b0261c1ab1a5c804aa355d816515fa984cdd827ed32edfb187c0a722"
+    },
+    "@std/fs@0.222.1": {
+      "integrity": "337613f33e6e5970dddb263c3a3e5b8e39c97810ad6fe326cb9f65146af2503b"
+    },
     "@std/internal@1.0.14": {
       "integrity": "291516b3d4c35024d6ffbc0a9df5bf4c64116e05b50012cf846710152d2ffdf7"
+    },
+    "@std/jsonc@0.222.1": {
+      "integrity": "5d82d64eeb244e88fbb0927587dea7e1feccc6d5d9f49995b9ff5756d01be493",
+      "dependencies": [
+        "jsr:@std/assert@~0.222.1"
+      ]
+    },
+    "@std/path@0.222.1": {
+      "integrity": "aad3e9463ca53b0adb25b4d5beb330025674aaa3278da24c1c261d9289a9e48b",
+      "dependencies": [
+        "jsr:@std/assert@~0.222.1"
+      ]
     },
     "@utiliti3s/loggers@0.1.0": {
       "integrity": "1bae02b314a323e82bd3a7176b9089cbdc37a67d0e806b3791e34cea4acd80bf"

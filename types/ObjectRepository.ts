@@ -18,16 +18,14 @@ export type ObjectRepository<Object extends SaveAble<Arguments>> = {
    * @param _object The object to save.
    * @returns The identified object.
    */
-  save(_object: Identified<Object>): Identified<Object>;
-  save(_object: Object): Identified<Object>;
+  save(_object: Object | Identified<Object>): Identified<Object>;
 
   /**
    * Saves multiple objects to the repository.
    * @param _objects The objects to save.
    * @returns An array of identified objects.
    */
-  saveMany(..._objects: Identified<Object>[]): Identified<Object>[];
-  saveMany(..._objects: Object[]): Identified<Object>[];
+  saveMany(..._objects: (Object | Identified<Object>)[]): Identified<Object>[];
 
   /**
    * Retrieves all objects from the repository.
