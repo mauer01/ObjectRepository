@@ -4,22 +4,8 @@ import { SaveAbleStub } from "../../DuelingBookAddons/test/stubs/SaveAbleStub.ts
 import type { SaveAble } from "../../DuelingBookAddons/Interfaces/SaveAble.ts";
 import { RamLogger } from "Logger";
 import type { Identified } from "../../DuelingBookAddons/Interfaces/Identified.ts";
-class Test {
-  static args: unknown[] = [];
-  static load(
-    args: { arg1: string; arg2: string },
-    deps: { no: string },
-  ): SaveAble<{ arg1: string; arg2: string }> {
-    this.args.push([args, deps]);
-    const a = new SaveAbleStub();
-    a.registerOutput("save", args, true);
-    return a.this;
-  }
-  static clear(): void {
-    this.args = [];
-  }
-  static structuredType: { arg1: string; arg2: string };
-}
+import { TestFactory } from "./stubs/TestFactory.ts";
+
 Deno.test("StorageRepo", async (t) => {
   const generateNoise = (a: boolean = false) => {
     localStorage.clear();
@@ -38,7 +24,7 @@ Deno.test("StorageRepo", async (t) => {
   const localStorageRepo = new StorageRepo(
     localStorage,
     "test",
-    Test,
+    TestFactory,
     testDeps,
     ramLogger,
   );
@@ -49,7 +35,7 @@ Deno.test("StorageRepo", async (t) => {
     await st.step("keys", () => {
       localStorage.setItem("test:_keys", JSON.stringify(["1", "2"]));
       assertEquals(
-        new StorageRepo(localStorage, "test", Test, testDeps, ramLogger)
+        new StorageRepo(localStorage, "test", TestFactory, testDeps, ramLogger)
           //@ts-ignore private member
           .keyList,
         ["1", "2"],
@@ -61,7 +47,7 @@ Deno.test("StorageRepo", async (t) => {
     await st.step("success", () => {
       generateNoise();
 
-      const obj = localStorageRepo.save(Test.load(testArgs, testDeps));
+      const obj = localStorageRepo.save(TestFactory.load(testArgs, testDeps));
       assertEquals(
         JSON.parse(localStorage.getItem("test:" + obj.id) ?? "{}"),
         testArgs,
@@ -78,7 +64,7 @@ Deno.test("StorageRepo", async (t) => {
         arg2: "arg123",
       };
       const obj = localStorageRepo.save(
-        Test.load(testArgs, testDeps),
+        TestFactory.load(testArgs, testDeps),
       ) as unknown as Identified<SaveAbleStub>;
       obj.reset(true);
       assertEquals(
@@ -94,13 +80,13 @@ Deno.test("StorageRepo", async (t) => {
     });
   });
   await t.step("find", async (st) => {
-    Test.clear();
+    TestFactory.clear();
     generateNoise();
     localStorage.setItem("test:1", JSON.stringify(testArgs));
     await st.step("success", () => {
       const item = localStorageRepo.find("1");
       assertEquals(item.save(), testArgs);
-      assertEquals(Test.args, [[testArgs, testDeps]]);
+      assertEquals(TestFactory.args, [[testArgs, testDeps]]);
     });
     await st.step("not found", () => {
       assertThrows(
@@ -191,21 +177,24 @@ Deno.test("StorageRepo", async (t) => {
   });
   await t.step("findAll", async (st) => {
     await st.step("success", () => {
-      Test.clear();
+      TestFactory.clear();
       localStorage.setItem("test:1", JSON.stringify(testArgs));
       localStorage.setItem("test:2", JSON.stringify(testArgs));
       localStorage.setItem("test:_keys", JSON.stringify(["1", "2"]));
       const [item1, item2] = localStorageRepo.findAll();
       assertEquals(item1.save(), testArgs);
       assertEquals(item2.save(), testArgs);
-      assertEquals(Test.args, [[testArgs, testDeps], [testArgs, testDeps]]);
+      assertEquals(TestFactory.args, [[testArgs, testDeps], [
+        testArgs,
+        testDeps,
+      ]]);
       generateNoise();
     });
     await st.step("no table returns an empty list", () => {
       const empty = localStorageRepo.findAll();
       assertEquals(empty, []);
       generateNoise();
-      Test.clear();
+      TestFactory.clear();
     });
   });
 });
